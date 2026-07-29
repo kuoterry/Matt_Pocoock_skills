@@ -12,22 +12,22 @@ npx skills update grill-me
 
 ## What it does
 
-`grill-me` runs a relentless interview about a plan or design, walking every branch of the decision tree until you and the agent reach a **shared understanding**.
+`grill-me` 針對一個計畫或設計跑一場無情的訪談,走過決策樹上的每一個分支,直到你跟 agent 達成**共同的理解**。
 
-It asks **one question at a time** and waits. It never dumps a batch of questions at you — that is bewildering — and where a question can be answered by reading the codebase, it goes and reads rather than asking. Each question comes with the agent's own recommended answer, so you are reacting to a proposal, not staring at a blank prompt.
+它**一次問一個問題**然後等待。它絕不會一口氣丟一批問題給你——那樣只會讓人不知所措——而且只要一個問題能靠讀 codebase 回答,它就會自己去讀,不會拿去問你。每個問題都附上 agent 自己建議的答案,所以你是在回應一個提案,不是盯著一片空白發呆。
 
 ## When to reach for it
 
-You invoke this by typing `/grill-me` — the agent won't reach for it on its own.
+你打 `/grill-me` 來觸發它——agent 不會自己去找它。
 
-Reach for it before you build, when a plan feels roughly right but you can sense unresolved decisions hiding in it — the moment you want the soft spots found and forced into the open. If you want that same interrogation to also leave a paper trail of ADRs and a glossary behind, use [grill-with-docs](https://aihero.dev/skills-grill-with-docs) instead. And if the effort is too big to hold in one session and the route to the goal is still foggy — a greenfield project, a huge feature build — start further upstream with [wayfinder](https://aihero.dev/skills-wayfinder), which charts it as a map of decisions first and then merges back into this flow.
+在動手蓋之前,當一個計畫感覺大致對了,但你能感覺到裡面藏著還沒解決的決策時就用它——這正是你想把那些軟肋找出來、逼它們浮上檯面的時刻。如果你想讓同一場盤問同時留下 ADR 跟詞彙表這種紙本紀錄,改用 [grill-with-docs](https://aihero.dev/skills-grill-with-docs)。而如果這件事大到一次 session 裝不下、通往目標的路線還很模糊——一個全新的專案、一個巨大的功能建置——從更上游的 [wayfinder](https://aihero.dev/skills-wayfinder) 開始,它會先把這件事畫成一張決策地圖,再併回這條流程。
 
-## The decision tree
+## 決策樹
 
-The session walks the plan as a tree of decisions, resolving dependencies between them one by one — a parent decision settled before the choices that hang off it. The point is not to reach agreement quickly; it is to make every implicit call explicit, so nothing important is left silently assumed. You come out the other side with a plan whose branches have all been visited.
+這場 session 把計畫走成一棵決策樹,一個一個解決它們之間的依賴關係——父決策先定案,才輪到掛在它底下的選擇。重點不是快速達成共識;而是讓每一個隱含的判斷都變得明講,不留下任何被默默假設的重要事項。走完之後,你手上會有一個每個分支都被走過一遍的計畫。
 
-`grill-me` is **stateless**: it writes nothing and leaves no workspace behind. It runs anywhere, and the only artifact is the sharpened understanding in the conversation itself. That is the deliberate contrast with [grill-with-docs](https://aihero.dev/skills-grill-with-docs), which captures the same interview as durable ADRs and a glossary.
+`grill-me` 是**無狀態的**:它什麼都不寫,也不留下任何工作區。它可以在任何地方跑,唯一的產物就是這場對話本身裡被磨利過的理解。這正是它跟 [grill-with-docs](https://aihero.dev/skills-grill-with-docs) 刻意形成的對比——後者跑同一場訪談,但額外把結果記成長久保存的 ADR 跟詞彙表。
 
 ## Where it fits
 
-`grill-me` is a reach-for-it-anytime standalone — the pre-build stress test you run whenever a plan needs hardening. It is the stateless, user-invoked front door to the [grilling](https://aihero.dev/skills-grilling) primitive; its closest neighbour is [grill-with-docs](https://aihero.dev/skills-grill-with-docs), the stateful sibling that runs the same interview but additionally records the decisions as ADRs and a glossary. If the outcome is a spec you want written down, hand off to [to-spec](https://aihero.dev/skills-to-spec), which synthesises the settled understanding into a spec without re-interviewing you. When you're unsure which flow fits, [ask-matt](https://aihero.dev/skills-ask-matt) routes you.
+`grill-me` 是一個隨時可以拿來用的獨立工具——每當一個計畫需要被鍛鍊得更扎實時,你就跑一次的建置前壓力測試。它是 [grilling](https://aihero.dev/skills-grilling) 這個原始元件的無狀態、user-invoked 前門;它最近的鄰居是 [grill-with-docs](https://aihero.dev/skills-grill-with-docs),那個手足跑同一場訪談,但額外把決策記成 ADR 與詞彙表。如果結果是一份你想寫下來的 spec,交接給 [to-spec](https://aihero.dev/skills-to-spec),它會把定案的理解整理成一份 spec,不用再訪談你一次。不確定該用哪個流程時,[ask-matt](https://aihero.dev/skills-ask-matt) 會幫你導航。

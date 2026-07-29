@@ -12,28 +12,28 @@ npx skills update implement
 
 ## What it does
 
-`implement` builds the work described in a spec or a set of tickets — driving it through test-driven development, typechecking, and the full test suite, then handing off to review and committing to the current branch.
+`implement` 建構一份 spec 或一組 ticket 裡描述的工作 —— 透過 test-driven development、型別檢查,以及完整的測試套件把它跑完,再交接給審查,並 commit 進目前的 branch。
 
-It does **not** decide what to build. The spec is already settled and the seams are already agreed; `implement` executes that plan rather than reopening it. It is the hands, not the head — the thinking happened upstream.
+它**不會**決定要建什麼。spec 已經定案,接縫也已經談好;`implement` 是執行那份計畫,而不是重新打開它。它是那雙手,不是那顆腦袋 —— 思考的部分在上游已經做完了。
 
 ## When to reach for it
 
-You invoke this by typing `/implement` — the agent won't reach for it on its own.
+你打 `/implement` 來觸發它 —— agent 不會自己去找它。
 
-Reach for it once the work is written down as a spec or split into tickets and you're ready to turn that into code. If the spec doesn't exist yet, write it first — for that, use [to-spec](https://aihero.dev/skills-to-spec), or [to-tickets](https://aihero.dev/skills-to-tickets) to break a spec into tickets. If you just want to build something test-first without a full spec, drop to [tdd](https://aihero.dev/skills-tdd) directly.
+當工作已經寫成一份 spec,或已經拆成一組 ticket,而你準備好把它變成程式碼時就用它。如果 spec 還不存在,先寫出來 —— 用 [to-spec](https://aihero.dev/skills-to-spec),或用 [to-tickets](https://aihero.dev/skills-to-tickets) 把一份 spec 拆成 ticket。如果你只是想在沒有完整 spec 的情況下,用測試先行的方式建東西,直接切到 [tdd](https://aihero.dev/skills-tdd)。
 
-## Pre-agreed seams
+## 事先談好的接縫
 
-The idea `implement` runs on is the **seam** — the stable interface a feature is tested at, chosen before any code is written. It doesn't invent seams mid-build; it uses the ones already picked (during [to-spec](https://aihero.dev/skills-to-spec)) and writes tests against them via [tdd](https://aihero.dev/skills-tdd). Working at pre-agreed seams is what keeps the implementation honest: the tests target something durable, so the code underneath can move without the tests moving.
+`implement` 運作所依靠的概念是**接縫(seam)**—— 一個功能被測試的那個穩定介面,在任何程式碼寫出來之前就先選好。它不會在建置過程中臨時發明接縫;它用的是已經選好的那些(在 [to-spec](https://aihero.dev/skills-to-spec) 期間選的),並透過 [tdd](https://aihero.dev/skills-tdd) 針對它們寫測試。在事先談好的接縫上工作,才能讓實作保持誠實:測試瞄準的是穩固的東西,所以底下的程式碼可以變動,而測試不用跟著變。
 
-Around that core it keeps the loop tight — typecheck often, run single test files as it goes, run the whole suite once at the end — then closes out with a review pass and a commit to the current branch.
+圍繞這個核心,它讓迴圈保持緊實:常常做型別檢查、邊做邊跑單一測試檔、最後跑一次完整套件 —— 然後用一輪審查,再 commit 進目前的 branch 收尾。
 
 ## Where it fits
 
-`implement` is the build step near the end of the main chain, just before the review:
+`implement` 是主要鏈末段、就在審查之前的建置步驟:
 
 ```txt
 grill-with-docs → to-spec → to-tickets → implement → code-review
 ```
 
-Reach for it after the work has been specced and sequenced, not before. Its key neighbours are [to-tickets](https://aihero.dev/skills-to-tickets), which produces the tickets — each declaring its blocking edges — that it works through, and [tdd](https://aihero.dev/skills-tdd), which it drives internally to write the tests at each seam before running its own [code-review](https://aihero.dev/skills-code-review) pass and committing. When you're unsure which skill or flow fits, [ask-matt](https://aihero.dev/skills-ask-matt) routes you.
+在工作已經寫成 spec、排好順序之後再用它,而不是之前。它的重要鄰居是 [to-tickets](https://aihero.dev/skills-to-tickets),它產出的那些 ticket(每個都宣告自己的 blocking 關係)就是它要一一做完的工作;還有 [tdd](https://aihero.dev/skills-tdd),它內部驅動 `tdd` 在每個接縫上寫測試,然後才跑自己的 [code-review](https://aihero.dev/skills-code-review) 並 commit。不確定該用哪個 skill 或流程時,[ask-matt](https://aihero.dev/skills-ask-matt) 會幫你導航。

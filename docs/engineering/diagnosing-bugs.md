@@ -12,29 +12,29 @@ npx skills update diagnosing-bugs
 
 ## What it does
 
-`diagnosing-bugs` runs a disciplined diagnosis loop for hard bugs and performance regressions — building a repro, minimising it, ranking hypotheses, instrumenting, then fixing with a regression test.
+`diagnosing-bugs` 針對難搞的 bug 與效能退化,跑一套有紀律的診斷迴圈 —— 建立重現方式、把它最小化、給假設排序、埋測,最後用一個回歸測試把修復鎖住。
 
-It refuses to hypothesise before you have a **tight feedback loop** — one runnable command that already goes red on *this* bug. Reading code to build a theory before that command exists is the exact failure this skill prevents. No red-capable loop, no diagnosis.
+在你手上有一個**緊迴圈(tight feedback loop)**之前 —— 一條已經能對*這個* bug 跑出紅燈的可執行指令 —— 它拒絕先提出假設。在那條指令存在之前就去讀程式碼、建立理論,正是這個 skill 要防止的那種失敗。沒有能亮紅燈的迴圈,就不診斷。
 
 ## When to reach for it
 
-Type `/diagnosing-bugs`, or the agent reaches for it automatically when a task fits — it fires on "diagnose" / "debug this", or when you report something broken, throwing, failing, or slow.
+打 `/diagnosing-bugs`,或者當任務吻合時 agent 會自動找上它 —— 遇到「diagnose」/「debug this」,或是你回報有東西壞了、丟例外、失敗,或變慢時,它就會觸發。
 
-Reach for it on the hard ones: the bug that resists a first glance, the intermittent flake, the regression that crept in between two known-good states. For a quick throwaway to sanity-check a design question rather than chase a defect, use [prototype](https://aihero.dev/skills-prototype) instead.
+難搞的情況就用它:第一眼看不出所以然的 bug、時有時無的 flaky 測試、在兩個已知良好的狀態之間悄悄爬進來的 regression。如果只是想做個用完即丟的東西來驗證一個設計問題,而不是在追一個缺陷,改用 [prototype](https://aihero.dev/skills-prototype)。
 
-## The tight loop is the skill
+## 緊迴圈就是這個 skill 的核心
 
-Everything else — bisection, hypothesis-testing, instrumentation — is mechanical once you have the signal. So the skill spends disproportionate effort on Phase 1: constructing a pass/fail command that drives the actual bug code path and asserts the user's exact symptom, then **tightening** it until it is fast, deterministic, and agent-runnable. A 30-second flaky loop is barely better than none; a 2-second deterministic one is a debugging superpower.
+一旦你有了訊號,剩下的一切 —— 二分搜尋、假設檢驗、埋測 —— 都只是機械式的操作。所以這個 skill 把不成比例的心力都放在第一階段:建出一條會驅動真正 bug 路徑、斷言使用者確切症狀的通過/失敗指令,然後把它**收緊**到快、確定、agent 可以自己跑。一個要跑 30 秒、還會 flaky 的迴圈,幾乎跟沒有一樣;一個 2 秒、結果穩定的迴圈,才是除錯的超能力。
 
-It gives you a ladder of ways to build that loop — failing test, curl script, CLI diff, headless browser, replayed trace, throwaway harness, fuzz loop, `git bisect run`, differential run — and, only as a last resort, a human-in-the-loop bash script. For non-deterministic bugs the goal isn't a clean repro but a **higher reproduction rate**: loop the trigger, parallelise, add stress until the flake is debuggable.
+它給你一整套建這種迴圈的階梯 —— 失敗的測試、curl script、CLI diff、headless browser、重播的 trace、用完即丟的測試骨架、fuzz 迴圈、`git bisect run`、差異比對執行 —— 只有在萬不得已時,才退到需要人在迴圈裡的 bash script。對於非確定性的 bug,目標不是一個乾淨的重現,而是一個**更高的重現率**:反覆觸發、平行跑、加壓力,直到這個 flaky 情況變得可以除錯。
 
 ## It's working if
 
-- It builds and runs a repro command *before* theorising — and pastes the invocation and its red output.
-- The loop asserts the symptom you actually reported, not a nearby failure.
-- Hypotheses arrive as a ranked, falsifiable list shown to you before any are tested.
-- Debug instrumentation is tagged (`[DEBUG-...]`) and grepped away before it declares done.
+- 它會在提出理論*之前*先建好並跑一次重現指令 —— 並貼出執行方式與它跑出的紅燈輸出。
+- 這個迴圈斷言的是你真正回報的那個症狀,不是附近某個看起來很像的失敗。
+- 假設是以一份排過序、可被證偽的清單出現,在測試任何一個之前先給你看。
+- 除錯用的埋測都有標記(`[DEBUG-...]`),在宣告完成前會被 grep 掉。
 
 ## Where it fits
 
-`diagnosing-bugs` is a reach-for-it-anytime standalone — you drop into it the moment something is broken, and drop out once the fix and its regression test are in. Its post-mortem hands off to [improve-codebase-architecture](https://aihero.dev/skills-improve-codebase-architecture) when the real finding is that there's no good seam to lock the bug down — the code, not the bug, is the problem. When you're unsure which skill fits, [ask-matt](https://aihero.dev/skills-ask-matt) routes you.
+`diagnosing-bugs` 是一個**隨時可以拿來用的獨立工具** —— 東西一壞掉你就切進去用,修好、加上回歸測試之後就跳出來。當它做完事後檢討,發現真正的問題是「沒有一個好的接縫能把這個 bug 鎖住」—— 問題出在程式碼,不是這個 bug 本身 —— 它會交接給 [improve-codebase-architecture](https://aihero.dev/skills-improve-codebase-architecture)。不確定該用哪個 skill 時,[ask-matt](https://aihero.dev/skills-ask-matt) 會幫你導航。

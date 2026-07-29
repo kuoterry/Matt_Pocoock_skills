@@ -12,45 +12,45 @@ npx skills update to-tickets
 
 ## What it does
 
-`to-tickets` breaks a plan, spec, or the current conversation into a set of **tickets** — each a tracer-bullet vertical slice — and publishes them to your configured tracker, with every ticket declaring the tickets that block it.
+`to-tickets` 把一份計畫、spec,或目前的對話拆成一組**ticket**——每張都是一個 tracer-bullet 垂直切片——再發佈到你設定好的 tracker,每張 ticket 都宣告是哪些 ticket 在擋著它。
 
-Every ticket is a **tracer bullet** — a thin *vertical* slice that cuts through all integration layers end-to-end (schema, API, UI, tests), never a horizontal slice of one layer. A completed slice is demoable or verifiable on its own, which is what makes each ticket safe to hand to an agent.
+每張 ticket 都是一發**tracer bullet**——一個薄薄的*垂直*切片,端到端切穿所有整合層(schema、API、UI、測試),絕不是單一層的水平切片。一個做完的切片自己就能展示或驗證,這正是讓每張 ticket 能安心交給 agent 的原因。
 
 ## When to reach for it
 
-You invoke this by typing `/to-tickets` — the agent won't reach for it on its own.
+你打 `/to-tickets` 來觸發它——agent 不會自己去找它。
 
-Reach for it once you have an agreed plan or a written spec and you want it split into tickets. Point it at the conversation, or pass a spec or issue reference and it fetches the body and comments first. If the change hasn't been written up as a spec yet, produce one first — for that, use [to-spec](https://aihero.dev/skills-to-spec).
+當你已經有一份談好的計畫或寫好的 spec,想把它拆成 ticket 時就用它。指向這場對話,或傳入一份 spec 或 issue 參照,它會先抓取內文與留言。如果這項變動還沒被寫成 spec,先產出一份——用 [to-spec](https://aihero.dev/skills-to-spec)。
 
 ## Prerequisites
 
-`to-tickets` publishes into your issue tracker, so [setup-matt-pocock-skills](https://aihero.dev/skills-setup-matt-pocock-skills) must have configured the tracker and its triage label vocabulary for this repo first. On a real tracker it applies the ready-for-agent label as it publishes.
+`to-tickets` 會發佈進你的 issue tracker,所以 [setup-matt-pocock-skills](https://aihero.dev/skills-setup-matt-pocock-skills) 必須已經先幫這個 repo 設定好 tracker 跟它的 triage 標籤詞彙。在真實的 tracker 上,它發佈時會自己套用 ready-for-agent 標籤。
 
-## One artifact, two readings
+## 一份產物,兩種讀法
 
-The blocking edges are the whole point. They make one set of tickets read two ways, depending on the tracker:
+blocking 關係就是整個重點所在。它們讓同一組 ticket,依 tracker 不同而有兩種讀法:
 
-- **Local files** → one file per ticket under `.scratch/<feature>/issues/`, numbered blockers-first, the edges written as text. You work them top-to-bottom, by hand, staying in the loop.
-- **A real tracker (GitHub, Linear)** → one issue per ticket, the edges as native blocking links (or sub-issues). Any ticket whose blockers are all done is on the **frontier** and can be grabbed — so several agents can run at once.
+- **本地檔案** → `.scratch/<feature>/issues/` 底下一個 ticket 一個檔,依阻擋關係編號、擋人的排前面,關係用文字寫出來。你由上而下手動一一處理,全程參與。
+- **真實 tracker(GitHub、Linear)** → 一個 ticket 對應一個 issue,關係用原生的 blocking 連結(或 sub-issue)表示。任何一張擋它的 ticket 都做完的,就位在**前緣(frontier)**上,可以直接被領走——所以可以同時跑好幾個 agent。
 
-The edges live in the ticket regardless of medium; the medium only decides whether anything acts on them in parallel. `to-tickets` produces the artifact — how you run it (sequential by hand, or a parallel fleet) is up to you.
+不管用哪種媒介,關係都活在 ticket 裡;媒介只決定有沒有東西能平行去動它們。`to-tickets` 產出的是這份產物——你要怎麼跑它(手動依序,還是一支平行的艦隊)由你決定。
 
-## Vertical slices, not horizontal ones
+## 垂直切片,不是水平切片
 
-The whole skill turns on one distinction. A **horizontal** slice ships one layer of the change — all the schema, or all the API — and nothing works until every layer lands. A **vertical** slice, the tracer bullet, ships one narrow path through *every* layer at once, so it can be demoed the moment it's done.
+整個 skill 繞著一個區別轉。一個**水平**切片出貨的是變動的一整層——所有 schema,或所有 API——在每一層都上線之前,什麼都不會動。一個**垂直**切片,也就是 tracer bullet,一次出貨一條穿過*每一層*的窄路徑,所以它一做完就能展示。
 
-Before slicing, `to-tickets` looks for prefactoring — "make the change easy, then make the easy change" — and orders that work first. It then quizzes you on the breakdown (granularity, blocking edges, what to merge or split) before publishing anything, and publishes blockers first so each ticket's "Blocked by" can reference a real ticket.
+在切之前,`to-tickets` 會先找有沒有 prefactoring 的機會——「先讓變動變簡單,再做那個簡單的變動」——並把那份工作排在最前面。接著它會在發佈任何東西之前,針對拆分方式盤問你(粒度、阻擋關係、要合併還是拆開哪些),並先發佈擋人的 ticket,讓每張 ticket 的「Blocked by」都能參照到一張真實存在的 ticket。
 
-## The wide-refactor exception
+## 大範圍重構的例外
 
-One shape breaks the tracer-bullet rule: a **wide refactor** — a single mechanical change (rename a column, retype a shared symbol) whose **blast radius** fans across the whole codebase, so one edit breaks thousands of call sites at once and no vertical slice can land green. `to-tickets` slices it as **expand–contract** instead: expand (add the new form beside the old so nothing breaks), migrate (move call sites over in batches sized by blast radius, one ticket per batch, CI green throughout because the old form still exists), then contract (delete the old form once no caller remains). When even the batches can't stay green alone, they share an integration branch that all block a final integrate-and-verify ticket, and green is promised only there.
+有一種形狀會打破 tracer-bullet 規則:一個**大範圍重構**——一個單一的機械式變動(重新命名一個欄位、給一個共用符號改型別),它的**波及範圍(blast radius)**擴散到整個 codebase,所以一次編輯就會同時弄壞上千個呼叫點,沒有任何垂直切片能保持綠燈上線。`to-tickets` 改用**expand–contract** 的方式切它:expand(在舊寫法旁邊加上新寫法,不弄壞任何東西)、migrate(依波及範圍大小分批,把呼叫點搬過去,一批一張 ticket,過程中 CI 全程綠燈,因為舊寫法還在),然後 contract(等沒有呼叫者留著舊寫法後,把它刪掉)。當連分批都沒辦法各自保持綠燈時,它們會共用一個整合 branch,全部一起擋住最後一張「整合並驗證」的 ticket,而綠燈只保證在那裡出現。
 
 ## Where it fits
 
-`to-tickets` is a step in the main build chain:
+`to-tickets` 是主要建置鏈裡的一步:
 
 ```txt
 grill-with-docs → to-spec → to-tickets → implement → code-review
 ```
 
-It sits between [to-spec](https://aihero.dev/skills-to-spec), which hands it a settled spec with user stories to slice against, and [implement](https://aihero.dev/skills-implement), which builds each ticket, driving [tdd](https://aihero.dev/skills-tdd) internally to write the tests test-first, before its [code-review](https://aihero.dev/skills-code-review) pass. Work the frontier one ticket per fresh context, clearing between them. When you're unsure which skill or flow fits, [ask-matt](https://aihero.dev/skills-ask-matt) routes you.
+它介於 [to-spec](https://aihero.dev/skills-to-spec)(交給它一份定案、附 user story 可供切分的 spec)與 [implement](https://aihero.dev/skills-implement)(建構每張 ticket,內部驅動 [tdd](https://aihero.dev/skills-tdd) 以測試先行的方式寫測試,再跑它的 [code-review](https://aihero.dev/skills-code-review))之間。一次用一張全新的 context 處理前緣上的一張 ticket,做完就清空再繼續。不確定該用哪個 skill 或流程時,[ask-matt](https://aihero.dev/skills-ask-matt) 會幫你導航。

@@ -1,0 +1,496 @@
+<title>Matt Pocock Skills 使用手冊</title>
+<style>
+  :root {
+    --bg: #F1F2EF;
+    --surface: #FFFFFF;
+    --ink: #1D2321;
+    --ink-soft: #38403C;
+    --muted: #5B645F;
+    --accent: #B5541F;
+    --accent-soft: #E7CDBC;
+    --line: #DBDAD3;
+    --code-bg: #E9E8E2;
+    --radius: 3px;
+    --measure: 40em;
+  }
+
+  :root[data-theme="dark"] {
+    --bg: #14171A;
+    --surface: #1B1F22;
+    --ink: #E7E7E2;
+    --ink-soft: #C7CBC6;
+    --muted: #9AA39D;
+    --accent: #E08A4C;
+    --accent-soft: #4A3226;
+    --line: #2A2E31;
+    --code-bg: #23272A;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #14171A;
+      --surface: #1B1F22;
+      --ink: #E7E7E2;
+      --ink-soft: #C7CBC6;
+      --muted: #9AA39D;
+      --accent: #E08A4C;
+      --accent-soft: #4A3226;
+      --line: #2A2E31;
+      --code-bg: #23272A;
+    }
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, "PingFang TC", "Noto Sans TC", "Microsoft JhengHei",
+      "Segoe UI", system-ui, sans-serif;
+    line-height: 1.75;
+    font-size: 16.5px;
+    -webkit-font-smoothing: antialiased;
+    padding: 0 20px 80px;
+  }
+
+  main {
+    max-width: 780px;
+    margin: 0 auto;
+  }
+
+  code, .cmd, .tok {
+    font-family: "SF Mono", "Cascadia Mono", "Consolas", "Noto Sans Mono CJK TC", monospace;
+    font-size: 0.88em;
+  }
+
+  header.masthead {
+    max-width: var(--measure);
+    margin: 64px auto 56px;
+    padding-bottom: 28px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .eyebrow {
+    font-family: "SF Mono", "Cascadia Mono", "Consolas", monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 14px;
+  }
+
+  h1 {
+    font-size: 2.15rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+    margin: 0 0 14px;
+    color: var(--ink);
+  }
+
+  .lede {
+    color: var(--muted);
+    font-size: 1.05rem;
+    max-width: var(--measure);
+    margin: 0;
+  }
+
+  nav.toc {
+    max-width: var(--measure);
+    margin: 0 auto 64px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 18px;
+    font-size: 0.86rem;
+  }
+
+  nav.toc a {
+    color: var(--muted);
+    text-decoration: none;
+    border-bottom: 1px dotted var(--line);
+    padding-bottom: 1px;
+  }
+  nav.toc a:hover { color: var(--accent); border-bottom-color: var(--accent); }
+  nav.toc span.sep { color: var(--line); }
+
+  section {
+    max-width: var(--measure);
+    margin: 0 auto 58px;
+  }
+
+  section > .eyebrow { margin-bottom: 10px; }
+
+  h2 {
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin: 0 0 18px;
+    text-wrap: balance;
+  }
+
+  h3 {
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin: 28px 0 10px;
+  }
+
+  p { margin: 0 0 16px; }
+  p:last-child { margin-bottom: 0; }
+
+  .muted { color: var(--muted); }
+
+  a.inline { color: var(--accent); text-decoration: none; border-bottom: 1px solid var(--accent-soft); }
+  a.inline:hover { border-bottom-color: var(--accent); }
+
+  code.tok {
+    background: var(--code-bg);
+    color: var(--ink-soft);
+    padding: 0.1em 0.45em;
+    border-radius: var(--radius);
+    white-space: nowrap;
+  }
+
+  pre {
+    background: var(--code-bg);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 13px 16px;
+    overflow-x: auto;
+    margin: 0 0 16px;
+  }
+  pre code {
+    font-size: 0.86em;
+    color: var(--ink-soft);
+    background: none;
+    padding: 0;
+  }
+
+  /* install cards */
+  .install-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin: 22px 0 0;
+  }
+  @media (max-width: 640px) {
+    .install-grid { grid-template-columns: 1fr; }
+  }
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 20px 20px 22px;
+  }
+  .card h3 { margin-top: 0; font-size: 0.98rem; }
+  .card p.card-desc { color: var(--muted); font-size: 0.88rem; margin-bottom: 14px; }
+  .card pre { margin-bottom: 0; }
+
+  /* step list */
+  ol.steps {
+    list-style: none;
+    counter-reset: step;
+    padding: 0;
+    margin: 0;
+  }
+  ol.steps li {
+    counter-increment: step;
+    position: relative;
+    padding-left: 38px;
+    margin-bottom: 18px;
+  }
+  ol.steps li::before {
+    content: counter(step);
+    position: absolute;
+    left: 0;
+    top: 0.05em;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    font-family: "SF Mono", "Cascadia Mono", monospace;
+    font-size: 0.78rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  ol.steps li:last-child { margin-bottom: 0; }
+  ol.steps strong { color: var(--ink); }
+
+  /* flow diagram */
+  .flow-wrap {
+    overflow-x: auto;
+    margin: 26px 0 8px;
+    padding-bottom: 6px;
+  }
+  .flow {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    min-width: 640px;
+  }
+  .node {
+    flex: 0 0 auto;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 10px 14px;
+    font-size: 0.86rem;
+    text-align: center;
+    line-height: 1.3;
+  }
+  .node .tok { display: block; margin-bottom: 2px; }
+  .node.main { border-color: var(--accent); }
+  .node.main .tok { color: var(--accent); }
+  .node .zh { color: var(--muted); font-size: 0.78rem; }
+  .arrow {
+    flex: 0 0 auto;
+    width: 28px;
+    text-align: center;
+    color: var(--line);
+  }
+
+  .onramp-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 18px;
+  }
+  .onramp {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    padding: 10px 14px;
+    border-left: 2px solid var(--accent-soft);
+    font-size: 0.92rem;
+  }
+  .onramp .tok { color: var(--accent); }
+  .onramp .zh { color: var(--muted); font-size: 0.88rem; }
+
+  /* toolbox grid */
+  .toolbox {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+    margin-top: 4px;
+  }
+  @media (max-width: 640px) {
+    .toolbox { grid-template-columns: 1fr; }
+  }
+  .tool {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 14px 16px;
+  }
+  .tool .tok { display: inline-block; margin-bottom: 6px; color: var(--ink); font-weight: 600; }
+  .tool p { font-size: 0.88rem; color: var(--muted); margin: 0; }
+  .tool .badge {
+    float: right;
+    font-size: 0.66rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 1px 8px;
+  }
+
+  /* quick reference table */
+  table.ref {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.88rem;
+  }
+  table.ref th, table.ref td {
+    text-align: left;
+    padding: 9px 10px;
+    border-bottom: 1px solid var(--line);
+    vertical-align: top;
+  }
+  table.ref th {
+    color: var(--muted);
+    font-weight: 600;
+    font-size: 0.76rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  table.ref td.desc { color: var(--ink-soft); }
+  .ref-wrap { overflow-x: auto; }
+
+  .callout {
+    background: var(--surface);
+    border: 1px solid var(--accent-soft);
+    border-left: 3px solid var(--accent);
+    border-radius: var(--radius);
+    padding: 16px 18px;
+    font-size: 0.92rem;
+  }
+  .callout strong { color: var(--accent); }
+
+  footer {
+    max-width: var(--measure);
+    margin: 70px auto 0;
+    padding-top: 22px;
+    border-top: 1px solid var(--line);
+    color: var(--muted);
+    font-size: 0.82rem;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    section, header.masthead { animation: rise 0.5s ease both; }
+    section:nth-of-type(2) { animation-delay: 0.04s; }
+    section:nth-of-type(3) { animation-delay: 0.08s; }
+    section:nth-of-type(4) { animation-delay: 0.12s; }
+  }
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+</style>
+
+<main>
+
+  <header class="masthead">
+    <p class="eyebrow">操作手冊 · 中文版</p>
+    <h1>Matt Pocock Skills</h1>
+    <p class="lede">一套跑在 Claude Code / Codex 裡的工程 agent skill 集合。這份手冊教你怎麼裝、怎麼判斷該用哪一個、以及整套系統怎麼串在一起。</p>
+  </header>
+
+  <nav class="toc">
+    <a href="#what">這是什麼</a><span class="sep">/</span>
+    <a href="#install">安裝</a><span class="sep">/</span>
+    <a href="#setup">第一步</a><span class="sep">/</span>
+    <a href="#flow">主流程</a><span class="sep">/</span>
+    <a href="#toolbox">獨立工具</a><span class="sep">/</span>
+    <a href="#lost">不知道用哪個</a><span class="sep">/</span>
+    <a href="#ref">指令速查</a>
+  </nav>
+
+  <section id="what">
+    <p class="eyebrow">01 · 這是什麼</p>
+    <h2>一組 skill,不是一個框架</h2>
+    <p>每個 skill 都是一份 <code class="tok">SKILL.md</code>,教 agent 用某種紀律做一件事——訪談你、寫 spec、拆 ticket、測試先行寫程式、審查 diff。它們刻意做得小、可組合,不會接管你的整個開發流程,你隨時可以只挑一個來用。</p>
+    <p>skill 分兩種。<strong>User-invoked</strong> 只有你自己打 <code class="tok">/名稱</code> 才會觸發;<strong>Model-invoked</strong> 除了你自己打,agent 判斷情境吻合時也會自己找上門。手冊裡每個 skill 名字旁邊都會標明是哪一種。</p>
+  </section>
+
+  <section id="install">
+    <p class="eyebrow">02 · 安裝</p>
+    <h2>兩種裝法,擇一即可</h2>
+    <p class="muted">兩者裝的是同一套內容,差別在於你要不要能自己改。裝兩份只會讓每個 skill 重複一次。</p>
+    <div class="install-grid">
+      <div class="card">
+        <h3>Claude Code plugin</h3>
+        <p class="card-desc">訂閱式,唯讀,自動跟著更新。適合不想自己改內容的人。</p>
+        <pre><code>/plugin install mattpocock-skills</code></pre>
+      </div>
+      <div class="card">
+        <h3>skills.sh 安裝器</h3>
+        <p class="card-desc">把可編輯的檔案複製進你的專案。適合想自己改、也適用 Codex 等其他 agent。</p>
+        <pre><code>npx skills@latest add mattpocock/skills</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <section id="setup">
+    <p class="eyebrow">03 · 裝完第一件事</p>
+    <h2>每個 repo 先跑一次 setup</h2>
+    <ol class="steps">
+      <li><strong>在目標 repo 裡執行</strong> <code class="tok">/setup-matt-pocock-skills</code>。它會問你 issue 放哪(GitHub / Linear / 本地檔案)、triage 要用哪些標籤、domain 文件要存哪——每題都附建議答案,大部分情況答「好」就行。</li>
+      <li><strong>沒跑這步之前,先別用</strong> <code class="tok">/triage</code>、<code class="tok">/to-spec</code>、<code class="tok">/to-tickets</code>——這三個依賴這裡寫下的設定,沒設定就會用猜的。</li>
+      <li><strong>其餘的 skill 不需要它。</strong> <code class="tok">/grill-me</code>、<code class="tok">/tdd</code>、<code class="tok">/prototype</code> 這類工具跳過這步也能直接用。</li>
+    </ol>
+  </section>
+
+  <section id="flow">
+    <p class="eyebrow">04 · 核心心智模型</p>
+    <h2>一條主流程,兩條匝道</h2>
+    <p>多數工作都沿著同一條鏈走,從一個點子一路到 commit:</p>
+
+    <div class="flow-wrap">
+      <div class="flow">
+        <div class="node main"><span class="tok">/grill-with-docs</span><span class="zh">訪談 + 建詞彙</span></div>
+        <div class="arrow">→</div>
+        <div class="node main"><span class="tok">/to-spec</span><span class="zh">整理成 spec</span></div>
+        <div class="arrow">→</div>
+        <div class="node main"><span class="tok">/to-tickets</span><span class="zh">拆成 ticket</span></div>
+        <div class="arrow">→</div>
+        <div class="node main"><span class="tok">/implement</span><span class="zh">測試先行建構</span></div>
+        <div class="arrow">→</div>
+        <div class="node main"><span class="tok">/code-review</span><span class="zh">雙軸審查</span></div>
+      </div>
+    </div>
+
+    <p class="muted" style="font-size:0.86rem; margin-top:10px;">五步走完,程式碼會被 commit 進目前的 branch。中途每一步都可以單獨叫出來用,不一定要走完全程。</p>
+
+    <h3>兩條匝道併上這條主線</h3>
+    <div class="onramp-wrap">
+      <div class="onramp">
+        <span class="tok">/triage</span>
+        <span class="zh">手上一堆 bug 回報、不是自己開的工作 → 先分類驗證,再交給主流程</span>
+      </div>
+      <div class="onramp">
+        <span class="tok">/wayfinder</span>
+        <span class="zh">工作大到一次 session 裝不下、路線還模糊 → 先畫決策地圖,清完再交給 <span class="tok" style="color:var(--muted)">/to-spec</span></span>
+      </div>
+    </div>
+  </section>
+
+  <section id="toolbox">
+    <p class="eyebrow">05 · 隨時可以單獨拿來用</p>
+    <h2>不進主流程的獨立工具</h2>
+    <p class="muted">不是每次都要走五步全程。這些工具解決的是單一、具體的問題,想到就用,用完就丟。</p>
+    <div class="toolbox">
+      <div class="tool"><span class="badge">user</span><span class="tok">/grill-me</span><p>只要訪談、不要留文件的版本。</p></div>
+      <div class="tool"><span class="badge">user</span><span class="tok">/handoff</span><p>把對話壓縮成交接文件,換 session 接手。</p></div>
+      <div class="tool"><span class="badge">model</span><span class="tok">/prototype</span><p>用完即丟的程式,回答一個設計問題。</p></div>
+      <div class="tool"><span class="badge">model</span><span class="tok">/diagnosing-bugs</span><p>難搞的 bug:先建紅燈迴圈,再診斷。</p></div>
+      <div class="tool"><span class="badge">model</span><span class="tok">/tdd</span><p>單獨的紅-綠-重構迴圈,不需要完整 spec。</p></div>
+      <div class="tool"><span class="badge">model</span><span class="tok">/resolving-merge-conflicts</span><p>卡在 merge/rebase 衝突時,依意圖逐 hunk 解決。</p></div>
+      <div class="tool"><span class="badge">model</span><span class="tok">/research</span><p>背景 agent 查第一手資料,交回附引用的筆記。</p></div>
+      <div class="tool"><span class="badge">user</span><span class="tok">/improve-codebase-architecture</span><p>每隔幾天掃一次,找可以加深的 module。</p></div>
+      <div class="tool"><span class="badge">model</span><span class="tok">/codebase-design</span><p>設計深 module 用的詞彙參考,不是流程。</p></div>
+      <div class="tool"><span class="badge">model</span><span class="tok">/domain-modeling</span><p>磨利專案用語,更新 <code class="tok">CONTEXT.md</code> 與 ADR。</p></div>
+      <div class="tool"><span class="badge">user</span><span class="tok">/teach</span><p>跨多個 session,把目前資料夾變成學習工作區。</p></div>
+      <div class="tool"><span class="badge">user</span><span class="tok">/writing-great-skills</span><p>自己要寫 skill 時的參考原則。</p></div>
+    </div>
+  </section>
+
+  <section id="lost">
+    <p class="eyebrow">06 · 不知道該用哪個</p>
+    <h2>問 router 就好</h2>
+    <div class="callout">
+      打 <strong><code class="tok" style="background:none;color:var(--accent);">/ask-matt</code></strong>,描述你目前的情況——它不做任何實際工作,只負責告訴你該用哪個 skill、什麼順序執行。忘記整張地圖是正常的,這就是它存在的理由。
+    </div>
+  </section>
+
+  <section id="ref">
+    <p class="eyebrow">07 · 指令速查</p>
+    <h2>User-invoked 指令一覽</h2>
+    <p class="muted">以下都要自己打出來才會觸發,agent 不會自動找上它們。</p>
+    <div class="ref-wrap">
+      <table class="ref">
+        <thead><tr><th>指令</th><th>用途</th><th>先決條件</th></tr></thead>
+        <tbody>
+          <tr><td><code class="tok">/setup-matt-pocock-skills</code></td><td class="desc">每個 repo 第一次用其他 engineering skill 前,先跑一次</td><td class="muted">無</td></tr>
+          <tr><td><code class="tok">/ask-matt</code></td><td class="desc">不確定用哪個 skill 時的 router</td><td class="muted">無</td></tr>
+          <tr><td><code class="tok">/grill-with-docs</code></td><td class="desc">訪談 + 就地寫詞彙表與 ADR</td><td class="muted">無</td></tr>
+          <tr><td><code class="tok">/grill-me</code></td><td class="desc">只訪談,不留文件</td><td class="muted">無</td></tr>
+          <tr><td><code class="tok">/to-spec</code></td><td class="desc">把已對齊的討論整理成 spec 並發佈</td><td class="muted">已跑過 setup</td></tr>
+          <tr><td><code class="tok">/to-tickets</code></td><td class="desc">把 spec 拆成有 blocking 關係的 ticket</td><td class="muted">已跑過 setup</td></tr>
+          <tr><td><code class="tok">/implement</code></td><td class="desc">依 spec/ticket 測試先行建構,收尾前自動 review</td><td class="muted">已有 spec 或 ticket</td></tr>
+          <tr><td><code class="tok">/triage</code></td><td class="desc">把 tracker 裡的回報分類、驗證、寫說明</td><td class="muted">已跑過 setup</td></tr>
+          <tr><td><code class="tok">/wayfinder</code></td><td class="desc">大而模糊的工作,先畫決策地圖</td><td class="muted">已跑過 setup</td></tr>
+          <tr><td><code class="tok">/improve-codebase-architecture</code></td><td class="desc">掃 codebase,找加深機會,產出 HTML 報告</td><td class="muted">無</td></tr>
+          <tr><td><code class="tok">/handoff</code></td><td class="desc">把對話壓縮成交接文件</td><td class="muted">無</td></tr>
+          <tr><td><code class="tok">/teach</code></td><td class="desc">跨 session 的學習工作區</td><td class="muted">無</td></tr>
+          <tr><td><code class="tok">/writing-great-skills</code></td><td class="desc">寫/改 skill 的參考原則</td><td class="muted">無</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <footer>
+    詞彙備註:<code class="tok" style="background:none;padding:0;">Issue tracker</code>、<code class="tok" style="background:none;padding:0;">Issue</code>、skill 名稱與指令一律保留英文原文,與 repo 本身的用語保持一致。完整清單見 <span class="tok">README.md</span> 與各 <span class="tok">docs/&lt;bucket&gt;/&lt;skill&gt;.md</span>。
+  </footer>
+
+</main>

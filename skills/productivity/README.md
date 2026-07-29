@@ -1,18 +1,18 @@
 # Productivity
 
-General workflow tools, not code-specific.
+一般工作流程工具,跟寫程式無關。
 
 ## User-invoked
 
-Reachable only when you type them (Claude Code: `disable-model-invocation: true`; Codex: `policy.allow_implicit_invocation: false` in `agents/openai.yaml`).
+只有你自己打出來才能觸發(Claude Code:`disable-model-invocation: true`;Codex:`agents/openai.yaml` 裡的 `policy.allow_implicit_invocation: false`)。
 
-- **[grill-me](./grill-me/SKILL.md)** — Get relentlessly interviewed about a plan or design until every branch of the decision tree is resolved.
-- **[handoff](./handoff/SKILL.md)** — Compact the current conversation into a handoff document so another agent can continue the work.
-- **[teach](./teach/SKILL.md)** — Teach the user a new skill or concept over multiple sessions, using the current directory as a stateful teaching workspace.
-- **[writing-great-skills](./writing-great-skills/SKILL.md)** — Reference for writing and editing skills well: the vocabulary and principles that make a skill predictable.
+- **[grill-me](./grill-me/SKILL.md)** —— 針對一個計畫或設計被無情地訪談,直到決策樹上每一個分支都被解決為止。
+- **[handoff](./handoff/SKILL.md)** —— 把目前的對話壓縮成一份交接文件,讓另一個 agent 能接手繼續做。
+- **[teach](./teach/SKILL.md)** —— 用目前的資料夾當成一個有狀態的教學工作區,跨多個 session 教使用者一項新技能或概念。
+- **[writing-great-skills](./writing-great-skills/SKILL.md)** —— 寫好、改好 skill 的參考資料:讓一個 skill 行為可預期所需的詞彙與原則。
 
 ## Model-invoked
 
-Model- or user-reachable (rich trigger phrasing so the model can reach for them).
+model 或使用者都能觸發(有豐富的觸發語句描述,讓 model 能自己找上門)。
 
-- **[grilling](./grilling/SKILL.md)** — Interview the user relentlessly about a plan, decision, or idea until every branch of the decision tree is resolved.
+- **[grilling](./grilling/SKILL.md)** —— 針對一個計畫、決策,或想法無情地訪談使用者,直到決策樹上每一個分支都被解決為止。

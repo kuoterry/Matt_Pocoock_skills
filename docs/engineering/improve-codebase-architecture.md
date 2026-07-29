@@ -12,30 +12,30 @@ npx skills update improve-codebase-architecture
 
 ## What it does
 
-`improve-codebase-architecture` scans a codebase for **deepening opportunities** — places where a shallow module (an interface nearly as complex as the thing it hides) could become a deep one — presents them as a self-contained visual HTML report, then grills through whichever one you pick.
+`improve-codebase-architecture` 掃描一個 codebase,找出**可以加深的機會** —— 一個淺 module(介面幾乎跟它藏的東西一樣複雜)可以變深的地方 —— 把它們做成一份獨立的視覺化 HTML 報告,然後針對你選的那個繼續往下 grill。
 
-It does **not** hand you a flat list of refactors. Every candidate has to pass the **deletion test** — would removing this module *concentrate* complexity behind a smaller interface, or just move it around? Only the "concentrates" cases earn a card. That filter is what stops the report from becoming generic cleanup advice.
+它**不會**丟給你一份扁平的重構清單。每個候選項都得先通過**刪除測試**——刪掉這個 module,是會把複雜度*集中*到一個更小的介面背後,還是只是把它搬來搬去?只有「集中」的情況才會拿到一張卡片。這個過濾條件正是阻止這份報告淪為通用清理建議的關鍵。
 
-Unless you point it at a specific area, it also scopes itself to where development is actually landing — reading the recent commits to bias toward the code you're still changing. Deepening a module pays off by making future changes to it easier, so it puts extra weight on the parts of the repo that have recently changed.
+除非你指定它去看特定區域,否則它也會把範圍限縮到開發真正在動的地方 —— 讀最近的 commit,偏向你還在改的程式碼。加深一個 module 的價值,在於讓未來對它的變動更容易,所以它會對 repo 裡最近有變動的部分加重權重。
 
 ## When to reach for it
 
-You invoke this by typing `/improve-codebase-architecture` — the agent won't reach for it on its own.
+你打 `/improve-codebase-architecture` 來觸發它 —— agent 不會自己去找它。
 
-Reach for it as a periodic health check: every few days, or whenever a codebase has started to feel like it takes too much bouncing between small modules to understand one concept. It reads the existing architecture and proposes where to deepen it. If you already know the module you want to redesign and just need the vocabulary to think it through, use [codebase-design](https://aihero.dev/skills-codebase-design) instead — this skill is the survey that finds the candidates; that one is the design bench.
+當作週期性的健康檢查來用:每隔幾天,或每當一個 codebase 開始讓人覺得,要搞懂一個概念得在一堆小 module 之間跳來跳去太累的時候。它會讀既有的架構,提出該在哪裡加深。如果你已經知道要重新設計哪個 module,只需要一套詞彙來想清楚,改用 [codebase-design](https://aihero.dev/skills-codebase-design) —— 這個 skill 是找出候選項的那份調查;那個才是設計工作台。
 
-## Deepening opportunities
+## 加深的機會
 
-The whole skill turns on one idea: **depth**. A deep module hides a lot of functionality behind a small, stable interface; a shallow one leaks its implementation through an interface almost as wide as the code beneath it. The report hunts for shallowness — pure functions extracted only for testability while the real bugs hide in how they're called (no **locality**), modules that leak across their **seams**, concepts you can't understand without opening five files — and proposes the deepening that would fix it.
+整個 skill 繞著一個概念轉:**深度**。一個深 module 把大量功能藏在一個小而穩定的介面背後;一個淺 module 則會透過一個幾乎跟底下程式碼一樣寬的介面,把實作洩漏出來。這份報告在找的是淺薄:純函式只是為了可測試性被抽出來,真正的 bug 卻藏在它們被呼叫的方式裡(沒有**locality**)、module 從自己的**接縫**洩漏出去、要打開五個檔案才能懂的概念 —— 並提出能修正這些問題的加深方式。
 
-It speaks in the shared design vocabulary (**module**, **interface**, **depth**, **seam**, **adapter**, **leverage**, **locality**) and in your project's own domain language from `CONTEXT.md`, so a candidate reads as "deepen the Order intake module," never "refactor the FooBarHandler."
+它講的是共用的設計詞彙(**module**、**interface**、**depth**、**seam**、**adapter**、**leverage**、**locality**),也講你專案自己從 `CONTEXT.md` 來的 domain 語言,所以一個候選項讀起來會是「把 Order intake module 加深」,而不會是「重構 FooBarHandler」。
 
-## The report, then the grill
+## 先報告,再 grill
 
-The output is a browser-ready HTML file written to your OS temp directory — nothing lands in the repo. Each candidate is a card with the files involved, the friction, a plain-English solution, the benefit in terms of locality and leverage, a before/after diagram, and a `Strong` / `Worth exploring` / `Speculative` badge. It closes with the one it would tackle first.
+輸出是一份寫進你作業系統暫存目錄、瀏覽器可以直接開的 HTML 檔 —— repo 裡不會多出任何東西。每個候選項都是一張卡片,列出涉及的檔案、摩擦點、白話的解法、以 locality 與 leverage 表示的好處、一張前後對照圖,以及一個 `Strong` / `Worth exploring` / `Speculative` 的標籤。最後會標出它認為最該優先處理的那一個。
 
-Then it stops and asks which one you want to explore. Pick one and it runs the [grilling](https://aihero.dev/skills-grilling) loop over that design — constraints, what sits behind the seam, which tests survive — updating the domain model inline as decisions crystallise.
+接著它會停下來,問你想深入研究哪一個。選一個之後,它會針對那個設計跑一輪 [grilling](https://aihero.dev/skills-grilling) 迴圈 —— 限制條件、接縫背後藏了什麼、哪些測試能留下來 —— 隨著決策結晶,就地更新 domain model。
 
 ## Where it fits
 
-`improve-codebase-architecture` is **periodic maintenance** — run it every few days, not as a step in a chain. Its neighbours are [codebase-design](https://aihero.dev/skills-codebase-design), which owns the depth-and-seam vocabulary every candidate is written in, [grilling](https://aihero.dev/skills-grilling), which walks the decision tree once you've chosen a candidate, and [domain-modeling](https://aihero.dev/skills-domain-modeling), which keeps `CONTEXT.md` and the ADRs current as the redesign settles. When you're unsure which skill or flow fits, [ask-matt](https://aihero.dev/skills-ask-matt) routes you.
+`improve-codebase-architecture` 是**週期性維護** —— 每隔幾天跑一次,不是鏈裡的一個步驟。它的鄰居是 [codebase-design](https://aihero.dev/skills-codebase-design)(每個候選項所用的深度與接縫詞彙都由它擁有)、[grilling](https://aihero.dev/skills-grilling)(你選好候選項後,由它走過決策樹),以及 [domain-modeling](https://aihero.dev/skills-domain-modeling)(在重新設計定案的過程中,讓 `CONTEXT.md` 與 ADR 保持最新)。不確定該用哪個 skill 或流程時,[ask-matt](https://aihero.dev/skills-ask-matt) 會幫你導航。

@@ -12,18 +12,18 @@ npx skills update research
 
 ## What it does
 
-`research` answers a question by reading the sources that own the answer and leaving a cited Markdown file behind. It works only from **primary sources** — official docs, source code, specs, first-party APIs — never a secondary write-up of them, so what it saves is traceable back to something authoritative rather than a summary of a summary.
+`research` 透過閱讀擁有答案的來源來回答一個問題,並留下一份附引用的 Markdown 檔。它只從**第一手來源**下手——官方文件、原始碼、規格、第一方 API——絕不用別人對它們的二手整理,所以它存下來的東西可以追溯回一個權威來源,而不是「摘要的摘要」。
 
 ## When to reach for it
 
-Type `/research`, or the agent reaches for it automatically when a task turns into reading legwork.
+打 `/research`,或者當一個任務變成需要大量閱讀的苦工時,agent 會自動找上它。
 
-Reach for it when the next step is *finding something out* — how an API behaves, what a spec actually says, whether a claim holds — and you'd rather not stall your own thread doing the reading. For sharpening a plan by interview instead of by reading, use [grilling](https://aihero.dev/skills-grilling); for exploring what to build with throwaway code, use [prototype](https://aihero.dev/skills-prototype).
+當下一步是*去查一件事*——一個 API 實際行為怎樣、一份規格到底寫了什麼、一個說法站不站得住腳——而你不想讓這件事卡住自己手上這條線時就用它。想用訪談的方式而不是閱讀來磨利一個計畫,用 [grilling](https://aihero.dev/skills-grilling);想用用完即丟的程式碼探索要蓋什麼,用 [prototype](https://aihero.dev/skills-prototype)。
 
-## Delegated legwork
+## 委派出去的苦工
 
-The defining move is that the reading runs as a **background agent**. You keep working; it goes off, follows each claim back to its primary source, and drops a single cited Markdown file into wherever the repo keeps such notes. Research is legwork you delegate, not thinking you outsource — you get back a document to react to, with its sources attached.
+它的核心動作是:閱讀這件事以**背景 agent** 的方式執行。你繼續手上的工作;它自己跑去把每個說法追溯回第一手來源,再把一份附引用的 Markdown 檔丟進 repo 存放這類筆記的地方。research 是你委派出去的苦工,不是外包出去的思考——你拿回來的是一份可以回應的文件,附上它的來源。
 
 ## Where it fits
 
-A reach-for-it-anytime standalone that feeds the thinking skills: the file it produces is something to grill, plan, or design against, so it sits upstream of work like [grilling](https://aihero.dev/skills-grilling) and [to-prd](https://aihero.dev/skills-to-prd) rather than in the build chain. For the whole map, see [ask-matt](https://aihero.dev/skills-ask-matt).
+一個隨時可以拿來用的獨立工具,餵給那些負責思考的 skill:它產出的檔案是拿去 grill、規劃,或做設計依據用的東西,所以它排在 [grilling](https://aihero.dev/skills-grilling) 與 [to-prd](https://aihero.dev/skills-to-prd) 這類工作的上游,而不是身處建置鏈裡面。完整地圖見 [ask-matt](https://aihero.dev/skills-ask-matt)。

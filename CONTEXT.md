@@ -1,30 +1,30 @@
 # Matt Pocock Skills
 
-A collection of agent skills (slash commands and behaviors) loaded by Claude Code. Skills are organized into buckets and consumed by per-repo configuration emitted by `/setup-matt-pocock-skills`.
+一組 Claude Code 載入的 agent skill 集合(slash command 與行為模式)。skill 依 bucket 分類,由 `/setup-matt-pocock-skills` 產生的各 repo 專屬設定所使用。
 
-## Language
+## 用語
 
 **Issue tracker**:
-The tool that hosts a repo's issues — GitHub Issues, Linear, a local `.scratch/` markdown convention, or similar. Skills like `to-tickets`, `to-spec`, `triage`, and `qa` read from and write to it.
-_Avoid_: backlog manager, backlog backend, issue host
+承載一個 repo 所有 issue 的工具 —— GitHub Issues、Linear、本地 `.scratch/` markdown 慣例,或類似工具。`to-tickets`、`to-spec`、`triage`、`qa` 等 skill 會對它讀寫。
+_避免使用_:backlog manager、backlog backend、issue host
 
 **Issue**:
-A single tracked unit of work inside an **Issue tracker** — a bug, task, spec, or slice produced by `to-tickets`.
-_Avoid_: ticket (use only when quoting external systems that call them tickets, or for a **Decision ticket** — see below)
+**Issue tracker** 內部單一被追蹤的工作單位 —— 一個 bug、任務、spec,或由 `to-tickets` 產生的一個 slice。
+_避免使用_:ticket(僅在引用外部系統本身就稱其為 ticket 時使用,或指 **Decision ticket** —— 見下方)
 
 **Decision ticket**:
-A `wayfinder` unit — a child **Issue** of a `wayfinder:map` holding a *question* whose resolution is a decision, not a slice of a build to execute. The **decision** qualifier is what keeps it distinct from an implementation ticket; `wayfinder` introduces the term, then uses "ticket".
+`wayfinder` 用語,是 `wayfinder:map` 底下的一個子 **Issue**,內容是一個「問題」,其解法是一個決策而非要執行的建置 slice。**decision** 這個限定詞讓它與一般實作 ticket 區隔開;`wayfinder` 先引入此詞,之後就簡稱 "ticket"。
 
 **Triage role**:
-A canonical state-machine label applied to an **Issue** during triage (e.g. `needs-triage`, `ready-for-afk`). Each role maps to a real label string in the **Issue tracker** via `docs/agents/triage-labels.md`.
+在 triage 過程中套用到某個 **Issue** 上的一個標準狀態機標籤(如 `needs-triage`、`ready-for-afk`)。每個 role 透過 `docs/agents/triage-labels.md` 對應到 **Issue tracker** 裡實際的標籤字串。
 
-## Relationships
+## 關係
 
-- An **Issue tracker** holds many **Issues**
-- An **Issue** carries one **Triage role** at a time
-- A **Decision ticket** is an **Issue** (a child of a `wayfinder:map`)
+- 一個 **Issue tracker** 裡有許多 **Issue**
+- 一個 **Issue** 在同一時間只帶一個 **Triage role**
+- 一個 **Decision ticket** 是一種 **Issue**(`wayfinder:map` 的子項)
 
-## Flagged ambiguities
+## 已標記的模糊用語
 
-- "backlog" was previously used to mean both the *tool* hosting issues and the *body of work* inside it — resolved: the tool is the **Issue tracker**; "backlog" is no longer used as a domain term.
-- "backlog backend" / "backlog manager" — resolved: collapsed into **Issue tracker**.
+- "backlog" 過去同時被用來指「承載 issue 的工具」與「工具裡的工作內容本身」兩種意思 —— 已解決:工具本身統一稱 **Issue tracker**;"backlog" 不再作為此 repo 的定義用語使用。
+- "backlog backend" / "backlog manager" —— 已解決:一律併入 **Issue tracker**。

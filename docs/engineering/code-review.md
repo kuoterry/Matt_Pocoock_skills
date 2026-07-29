@@ -12,36 +12,36 @@ npx skills update code-review
 
 ## What it does
 
-`code-review` reviews the diff between `HEAD` and a fixed point you supply — a commit, branch, tag, or merge-base — along two separate axes: **Standards** (does the code follow this repo's documented conventions?) and **Spec** (does it implement what the originating issue or spec asked for?). It runs each axis as its own parallel sub-agent and reports them side by side. It never merges or re-ranks the two sets of findings — keeping them separate is the whole point, because a change can pass one axis and fail the other, and a single blended verdict lets one mask the other.
+`code-review` 審查 `HEAD` 跟你指定的一個固定點(一個 commit、branch、tag,或 merge-base)之間的 diff,沿著兩條各自獨立的軸線:**Standards**(這段程式碼有沒有遵守這個 repo 記載的慣例?)與 **Spec**(它有沒有實作出原始 issue 或 spec 要求的東西?)。它把每一軸都跑成各自獨立的平行 sub-agent,並排呈現結果。它絕不會把兩組發現合併或重新排序 —— 保持分開就是重點所在,因為一個變動可能一軸過、另一軸沒過,而單一混合過的結論會讓其中一個蓋掉另一個。
 
 ## When to reach for it
 
-Type `/code-review`, or the agent reaches for it automatically when you ask to review a branch, a PR, work-in-progress changes, or anything "since X".
+打 `/code-review`,或者當你要求審查一個 branch、一個 PR、進行中的變動,或任何「自 X 以來」的東西時,agent 會自動找上它。
 
-Reach for this when there is a diff to judge against a known-good point and you want the two questions — *is it built right?* and *is it the right thing?* — answered independently. It runs at the end of the build loop; for actually writing the code test-first, use [tdd](https://aihero.dev/skills-tdd), and for building a whole spec into code use [implement](https://aihero.dev/skills-implement), which runs its own `/code-review` pass before committing.
+當有一份 diff 要對照一個已知良好的點來判斷,而你想讓兩個問題 —— *做得對不對?* 跟 *做的是不是對的東西?* —— 各自獨立回答時,就用它。它是在建置迴圈的最後一步跑的;真正要用測試先行的方式寫程式碼,用 [tdd](https://aihero.dev/skills-tdd);要把整份 spec 建成程式碼,用 [implement](https://aihero.dev/skills-implement),它在 commit 前也會自己跑一輪 `/code-review`。
 
 ## Prerequisites
 
-The **Spec** axis needs somewhere to find the originating spec — an issue reference in the commit messages, a path you pass in, or a spec under `docs/`/`specs/`. That issue-tracker wiring comes from [setup-matt-pocock-skills](https://aihero.dev/skills-setup-matt-pocock-skills); without a spec the Spec axis simply skips and says so. The **Standards** axis needs nothing set up — it always carries a built-in Fowler smell baseline even in a repo that documents no conventions.
+**Spec** 這一軸需要有地方能找到原始的 spec —— commit 訊息裡的 issue 參照、你傳進去的路徑,或是 `docs/`/`specs/` 底下的一份 spec。這條 issue-tracker 的接線來自 [setup-matt-pocock-skills](https://aihero.dev/skills-setup-matt-pocock-skills);找不到 spec 時,Spec 這一軸就會直接略過並說明原因。**Standards** 這一軸不需要任何前置設定 —— 就算 repo 完全沒記載任何慣例,它也一律內建一套 Fowler 程式碼異味基準。
 
-## Two axes, never merged
+## 兩軸,絕不合併
 
-The defining idea is the **two axes**. **Standards** asks whether the diff conforms to how this repo writes code — its `CODING_STANDARDS.md` or `CONTRIBUTING.md`, plus a fixed baseline of ~12 Fowler code smells (Mysterious Name, Duplicated Code, Feature Envy, Data Clumps, …). Two rules keep the baseline safe: a documented repo standard always overrides it, and every smell is a judgement call, never a hard violation. **Spec** asks the orthogonal question — does the code do what the issue or spec actually asked, without missing requirements or smuggling in scope creep?
+這個 skill 的核心概念是**兩軸**。**Standards** 問的是這份 diff 有沒有照這個 repo 寫程式碼的方式來 —— 它的 `CODING_STANDARDS.md` 或 `CONTRIBUTING.md`,再加上一套固定的、約 12 種 Fowler 程式碼異味基準(Mysterious Name、Duplicated Code、Feature Envy、Data Clumps……)。有兩條規則讓這套基準用起來安全:repo 記載的慣例永遠優先於它,而且每一種異味都是判斷題,絕不是硬性違規。**Spec** 問的是另一個獨立問題 —— 這段程式碼有沒有做到 issue 或 spec 真正要求的事,沒有漏掉需求,也沒有偷偷夾帶範圍外的東西?
 
-They run as parallel sub-agents so neither pollutes the other's context, and the final report presents them under separate `## Standards` and `## Spec` headings with a per-axis summary. There is deliberately no single winner across axes.
+它們以平行 sub-agent 執行,確保彼此不會污染對方的 context,最終報告會用各自獨立的 `## Standards` 與 `## Spec` 標題呈現,每一軸各有摘要。刻意不在兩軸之間選出單一贏家。
 
 ## It's working if
 
-- It pins and confirms the fixed point first (`git rev-parse`), failing fast on a bad ref or empty diff rather than inside the sub-agents.
-- Standards and Spec findings arrive in two distinct blocks, each citing its source — a repo standard or baseline smell for one, a quoted spec line for the other.
-- When no spec can be found, the Spec axis reports "no spec available" instead of inventing requirements.
+- 它會先釘住並確認固定點(`git rev-parse`),遇到爛的 ref 或空的 diff 會直接快速失敗,而不是在 sub-agent 裡面才爆掉。
+- Standards 與 Spec 的發現會分成兩個獨立的區塊出現,各自引用自己的來源 —— 一邊是 repo 慣例或基準異味,另一邊是引用的 spec 原文。
+- 找不到 spec 時,Spec 這一軸會回報「no spec available」,而不是自己捏造需求。
 
 ## Where it fits
 
-`code-review` is the review step at the tail of the main build chain:
+`code-review` 是主要建置鏈末端的審查步驟:
 
 ```txt
 grill-with-docs → to-spec → to-tickets → implement → code-review
 ```
 
-Its closest neighbour is [implement](https://aihero.dev/skills-implement), which drives the build and calls this as its own review pass before committing; upstream, the spec it checks against is produced by [to-spec](https://aihero.dev/skills-to-spec) and [to-tickets](https://aihero.dev/skills-to-tickets). When you're unsure which skill or flow fits, [ask-matt](https://aihero.dev/skills-ask-matt) routes you.
+它最近的鄰居是 [implement](https://aihero.dev/skills-implement),它驅動整個建置過程,並在 commit 前呼叫這個 skill 做自己的審查;往上游看,它拿來核對的 spec 是由 [to-spec](https://aihero.dev/skills-to-spec) 與 [to-tickets](https://aihero.dev/skills-to-tickets) 產生的。不確定該用哪個 skill 或流程時,[ask-matt](https://aihero.dev/skills-ask-matt) 會幫你導航。
