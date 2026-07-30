@@ -16,6 +16,12 @@ Matt Pocock 的 Agent Skills repo —— 一組以 `SKILL.md` 為基礎的 skill
 
 沒有 build、lint 或自動化測試套件 —— 這個 repo 交付的是 markdown skill 定義與文件,不是應用程式碼。
 
+發版流程實際上由 CI 驅動:`.github/workflows/release.yml` 在 push 到 `main` 時跑 changesets action,自動開一個 `chore: version skills` PR(`npx changeset version`),合併後打 tag(`npx changeset tag`)。所以本機通常只需要 `npm run changeset` 記錄變更,不用自己跑 `npm run version`。
+
+**注意:changesets 只 bump `package.json`,不會動 `.claude-plugin/plugin.json` 的 `version`** —— 那份一律手動維護,慣例是**預先寫上下一次發佈的目標版號**,等 changesets 套用後 `package.json` 才追上來。所以在兩者之間看到落差是正常狀態,不是要修的 bug:目前 `plugin.json` 1.2.0、`package.json` 1.1.0,而 `.changeset/` 裡 10 筆待套用中含 `minor`,下次 release 會把 `package.json` 帶到 1.2.0,自然收斂。
+
+因此**不要**把 `plugin.json` 的版號往下改去「對齊」目前的 `package.json` —— Claude 是靠 plugin `version` 判斷已安裝使用者該不該看到更新,降版會讓裝過該版的人收不到更新訊號。要動版號時只往上加,並確認新值 ≥ `package.json` 套用完 changeset 後的預期版號。
+
 ## 一個 skill 的解剖結構
 
 每個 skill 是一個資料夾,內含:
@@ -57,4 +63,13 @@ skill 依 bucket 資料夾分類在 `skills/` 底下:
 
 - [CONTEXT.md](./CONTEXT.md) —— 這個 repo 的 domain glossary(Issue tracker、Issue、Decision ticket、Triage role)—— 命名新概念前先讀這份。
 - [.agents/adr/](./.agents/adr/) —— architecture decision record;要重新檢討某個已拍板的結構性決定(例如 bucket 化 skill vs. 扁平 plugin 路徑)前,先查這裡。
+- `.out-of-scope/` —— **已明確判定不做**的需求,每份寫明理由與對應的 upstream issue 編號(例如 grilling 不設問題數量上限、只支援主流 issue tracker)。實作任何看起來合理的新功能前先掃這裡 —— 已經被拒絕過的東西不要再做一次。
 - 根目錄的 `AGENTS.md` 指向這份檔案 —— Codex 與 Claude Code 共用同一套指示。
+
+## 這份 working copy 的本地狀態
+
+這不是 upstream 的乾淨 clone:
+
+- `origin` 指向使用者自己的 Synology git server(`kcc3713.synology.me:/volume1/Git_Server/Matt_Pocoock_skills.git`),**不是** `github.com/mattpocock/skills`。要拉 upstream 得自己另加 remote。
+- `CLAUDE.md`、`README.md`、`CONTEXT.md`、`.agents/`、`docs/`、各 bucket `README.md` 都已被本地 commit 翻成繁體中文(分支 `feature/zh-tw-translation`,同內容也在 `main`)。skill 本體(`SKILL.md`)維持英文。之後合併 upstream 變更時,這些檔案幾乎必然衝突。
+- `使用手冊.html`、`本地翻譯版怎麼用.pdf` 是本地新增的中文使用說明,upstream 沒有。
