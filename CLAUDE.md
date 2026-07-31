@@ -4,17 +4,22 @@
 
 ## Repo 總覽
 
-Matt Pocock 的 Agent Skills repo —— 一組以 `SKILL.md` 為基礎的 skill 集合(slash command 與 model 主動觸發的行為),涵蓋真實的軟體工程流程:grilling / 訪談、spec/ticket 流程、TDD、code review、domain modeling 等。這裡沒有應用程式碼;交付物就是這些 skill 定義本身與其配套文件。有兩種發佈管道:作為 Claude Code plugin(`.claude-plugin/`,此 repo 本身也是自己的單一 plugin marketplace),以及透過跨 harness 安裝器 `npx skills add mattpocock/skills`(skills.sh),後者會把可編輯的 skill 檔案複製進使用者的專案。
+Matt Pocock 的 Agent Skills repo —— 一組以 `SKILL.md` 為基礎的 skill 集合(slash command 與 model 主動觸發的行為),涵蓋真實的軟體工程流程:grilling / 訪談、spec/ticket 流程、TDD、code review、domain modeling 等。這裡沒有應用程式碼;交付物就是這些 skill 定義本身與其配套文件。有兩種發佈管道:作為 Claude Code plugin(`.claude-plugin/`),以及透過跨 harness 安裝器 `npx skills add mattpocock/skills`(skills.sh),後者會把可編輯的 skill 檔案複製進使用者的專案。
+
+plugin 管道又有兩條路徑,別搞混:
+
+- **官方 marketplace(README 給一般使用者的那條)**:`claude plugins install mattpocock-skills`,不用先 add 任何 marketplace,更新自動送達。
+- **本 repo 自帶的單一 plugin marketplace**:`.claude-plugin/marketplace.json` 讓任何人可以 `/plugin marketplace add <這個 repo 的路徑或 git URL>` 直接裝這份原始碼。**本機路徑(例如 `D:\Git\Matt_Pocoock_skills`)只有這台機器有效**;要給別人裝就得給對方拿得到的 git URL,而這份 working copy 的 `origin` 是 Synology git server,對方需要 NAS 存取權與 SSH key(見最下方「本地狀態」)。
 
 ## 常用指令
 
 - `npm run changeset` —— 為待發佈的版本記錄一筆 changeset
 - `npm run version` —— 套用累積的 changeset,bump `package.json` 版號,更新 `CHANGELOG.md`
-- `claude plugin validate . --strict` —— 驗證 `.claude-plugin/plugin.json` + `marketplace.json`;動到任一份 manifest 後都要跑
+- `claude plugin validate . --strict` —— 動到任一份 manifest 後都要跑。**注意它的輸出只印 `Validating marketplace manifest: ...` 一行**,不要以為 `plugin.json` 內容(尤其 `skills` 陣列裡的路徑是否真的存在)也被深驗過了 —— 那要靠下面第 1 條漂移檢查自己確認
 - `scripts/link-skills.sh` —— 把 `deprecated/` 以外的每個 skill symlink 進 `~/.claude/skills` 與 `~/.agents/skills`,供本機測試用(僅限維護者自用的 dev script,不是對外安裝器;檔頭明文寫「修改它、或要求修改它,都不會被核准」—— 不要動這支 script)
 - `scripts/list-skills.sh` —— 列出 repo 內所有 `SKILL.md` 路徑
 
-沒有 build、lint 或自動化測試套件 —— 這個 repo 交付的是 markdown skill 定義與文件,不是應用程式碼。唯一可自動驗證的是下面兩條「上架清單漂移」檢查(見「Bucket 結構與上架規則」),動過 skill 資料夾後跑一次:
+沒有 build、lint 或自動化測試套件 —— 這個 repo 交付的是 markdown skill 定義與文件,不是應用程式碼。唯一可自動驗證的是下面三條漂移檢查(前兩條見「Bucket 結構與上架規則」,第三條見「一個 skill 的解剖結構」),動過 skill 資料夾後跑一次:
 
 ```bash
 # 1. plugin.json 的 skills 陣列 == engineering/ + productivity/ 實際內容
@@ -24,6 +29,10 @@ diff <(node -e "console.log(require('./.claude-plugin/plugin.json').skills.map(s
 # 2. 每個上架 skill 都有對應 docs 頁,且沒有孤兒 docs 頁
 diff <(find skills/engineering skills/productivity -name SKILL.md | sed 's|^skills/||;s|/SKILL.md$||' | LC_ALL=C sort) \
      <(find docs -name '*.md' | sed 's|^docs/||;s|\.md$||' | LC_ALL=C sort)
+
+# 3. 每份 SKILL.md 旁邊都有 agents/openai.yaml(所有 bucket 都適用,不只上架那兩個)
+diff <(find skills -name SKILL.md | sed 's|/SKILL.md$||' | LC_ALL=C sort) \
+     <(find skills -name openai.yaml | sed 's|/agents/openai.yaml$||' | LC_ALL=C sort)
 ```
 
 (一定要 `LC_ALL=C sort`,否則 `-` 與字母的排序差異會產生假的 diff。頂層與各 bucket `README.md` 的條目仍需人工核對,沒有自動檢查。)
@@ -39,7 +48,7 @@ diff <(find skills/engineering skills/productivity -name SKILL.md | sed 's|^skil
 每個 skill 是一個資料夾,內含:
 
 - `SKILL.md` —— frontmatter(`name`、`description`,user-invoked skill 另加 `disable-model-invocation: true`),後面接 skill 的 prose 指示內容。
-- `agents/openai.yaml` —— Codex 端的旁掛 metadata(`interface.display_name`、`interface.short_description`),user-invoked skill 另配對 `policy.allow_implicit_invocation: false`。這是**所有** bucket 的硬性規定,不只上架的那兩個 —— 現況是每一份 `SKILL.md` 旁邊都有一份 `openai.yaml`(含 `misc/`、`personal/`、`in-progress/`、`deprecated/`),新增 skill 時別漏掉。
+- `agents/openai.yaml` —— Codex 端的旁掛 metadata(`interface.display_name`、`interface.short_description`),user-invoked skill 另配對 `policy.allow_implicit_invocation: false`。這是**所有** bucket 的硬性規定,不只上架的那兩個 —— 現況是每一份 `SKILL.md` 旁邊都有一份 `openai.yaml`(含 `misc/`、`personal/`、`in-progress/`、`deprecated/`),新增 skill 時別漏掉 —— 用「常用指令」裡的第 3 條漂移檢查驗證。
 - 選用的輔助參考檔(例如 `tdd/SKILL.md` 旁邊的 `tests.md`、`mocking.md`),由 `SKILL.md` 直接連結 —— skill 之間互相引用一律用 prose 呼叫方式(`/other-skill`),不用深入連到別的 skill 資料夾內的檔案。
 
 user-invoked 與 model-invoked 的完整區分、以及兩份 frontmatter 檔要如何保持同步,見 [.agents/invocation.md](./.agents/invocation.md)。
